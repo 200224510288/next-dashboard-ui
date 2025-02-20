@@ -18,14 +18,14 @@ export default function DashboardLayout({children}: DashboardLayoutProps) {
         <Link href="/" passHref>
           <div className="flex items-center justify-center lg:justify-start gap-2">
             <Image src="/logo.png" alt="logo" width={32} height={32} />
-            <span className="hidden lg:block">SchoolLama</span>
+            <span className="hidden lg:block font-bold">SchoolLama</span>
           </div>
         </Link>
         <Menu/>
       </div>
 
       {/* RIGHT Content Area */}
-      <div className="w-[86%] bg-gray-100 md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-scroll">
+      <div className="w-[86%] bg-gray-100 md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-scroll flex flex-col">
       <Navbar/>
       {children}
       </div>
