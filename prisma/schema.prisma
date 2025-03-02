@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  UserID   Int     @id @default(autoincrement()) // Auto-incrementing integer primary key
+  Email    String  @unique // Unique constraint
+  UserName String
+  Password String
+  
+  Agent    Agent?  @relation
+}
+
+model Agent {
+  AgentID      Int     @id
+  FirstName    String
+  LastName     String
+  OfficeAddress String?
+  HomeAddress  String?
+  City         String
+  
+  // Foreign key relation with the User model
+  User         User    @relation(fields: [AgentID], references: [UserID])
+}
