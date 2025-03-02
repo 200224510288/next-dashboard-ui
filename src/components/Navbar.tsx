@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 import { UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
 
 
+=======
+import Image from 'next/image';
+
+>>>>>>> cbb1ed8251ea8f1146778e2a33de9e2eecab388d
 const Navbar = () => {
   return (
     <div className='flex items-center justify-between p-4'>
@@ -13,7 +18,10 @@ const Navbar = () => {
           placeholder='Search...' 
           className='w-[200px] p-2 bg-transparent outline-none' // Added some styling for the input
         />
+<<<<<<< HEAD
 
+=======
+>>>>>>> cbb1ed8251ea8f1146778e2a33de9e2eecab388d
       </div>
 
       {/* Icons And USERS */}
@@ -32,10 +40,14 @@ const Navbar = () => {
           <span className='text-[10px] text-gray-500 text-right'>Admin</span>
         </div>
 
+<<<<<<< HEAD
         {/* <Image src="/avatar.png" alt="" width={36} height={36} className='rounded-full'/>     */}
 
         <UserButton/>
       
+=======
+        <Image src="/avatar.png" alt="" width={36} height={36} className='rounded-full'/>    
+>>>>>>> cbb1ed8251ea8f1146778e2a33de9e2eecab388d
       </div>
     </div>
   );

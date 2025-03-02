@@ -14,6 +14,7 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
+<<<<<<< HEAD
         Sky: "#C3EBFA",
         SkyLight: "#EDF9FD",
         Purple: "#CFCEFF",
@@ -21,6 +22,16 @@ const config: Config = {
         Yellow: "#FAE27C",
         YellowLight: "#FEFCE8"
       }
+=======
+        lamaSky: "#C3EBFA",
+        lamaSkyLight: "#EDF9FD",
+        lamaPurple: "#CFCEFF",
+        lamaPurpleLight: "#F1F0FF",
+        lamaYellow: "#FAE27C",
+        lamaYellowLight: "#FEFCE8"
+      }
+           
+>>>>>>> cbb1ed8251ea8f1146778e2a33de9e2eecab388d
     },
   },
   plugins: [],
