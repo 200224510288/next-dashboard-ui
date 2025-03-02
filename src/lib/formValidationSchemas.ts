@@ -2,6 +2,7 @@ import { z } from "zod";
 
 // Agent Schema
 export const agentSchema = z.object({
+  id: z.coerce.number().optional(),
   firstName: z.string().min(1, { message: "First name is required!" }),
   lastName: z.string().min(1, { message: "Last name is required!" }),
   email: z
@@ -17,9 +18,14 @@ export const agentSchema = z.object({
     .min(8, { message: "Password must be at least 8 characters long!" })
     .optional()
     .or(z.literal("")),  // optional password field (used in update)
+
   officeAddress: z.string().min(1, { message: "Office Address is required!" }),
   homeAddress: z.string().min(1, { message: "Home Address is required!" }),
   city: z.string().min(1, { message: "City is required!" }),
+
+
+  ContactNumber1: z.string().min(1, { message: "Contact Number 1 is required!" }),
+  ContactNumber2: z.string().optional().or(z.literal("")), 
 });
 
 export type AgentSchema = z.infer<typeof agentSchema>;

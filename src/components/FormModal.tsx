@@ -1,10 +1,18 @@
 "use client"
+import { createAgent, deleteAgent, updateAgent } from '@/lib/actions';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';  // Import Image from next/image
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
+import { toast } from 'react-toastify';
 import { any } from 'zod';
 
 
+
+const deleteActionMap = {
+  agent: deleteAgent,
+}
 
 const AgentForm = dynamic(()=>import('./forms/AgentForm'),{
     loading: ()=><h1>Loading...</h1>
@@ -13,50 +21,62 @@ const AgentForm = dynamic(()=>import('./forms/AgentForm'),{
 
 
 const forms:{
-    [key:string]:(type:"create" | "update",data?:any)=> JSX.Element;
+    [key:string]:(setOpen:Dispatch<SetStateAction<boolean>>, type:"create" | "update",data?:any)=> JSX.Element;
 
 } = {
-    agent: (type, data) => <AgentForm type={type} data={data}/>,
+    agent: (setOpen, type, data) => <AgentForm type={type} data={data} setOpen={setOpen} />,
 };
 
 
 const FormModal = ({
-    table,
-    type,
-    data,
-    id,
-  }: {
-    table: "agent";
-    type: "create" | "update" | "delete";
-    data?: any;
-    id?: number;
-  }) => {
-    const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-    const bgColor =
-      type === "create"
-        ? "bg-Yellow"
-        : type === "update"
-        ? "bg-Sky"
-        : "bg-Purple";
-  
-    const [open, setOpen] = useState(false);
-  
-    const Form = () => {
-      return type === "delete" && id ? (
-        <form action="" className="p-4 flex flex-col gap-4">
-          <span className="text-center font-medium">
-            All data will be lost. Are you sure you want to delete this {table}?
-          </span>
-          <button className="bg-red-700 text-white py-4 px-4 rounded-md border-none w-max self-center">
-            Delete
-          </button>
-        </form>
-      ) : type === "create" || type === "update" ? (
-        forms[table](type, data)
-      ) : (
-        "Form not Found!"
-      );
-    };
+  table,
+  type,
+  data,
+  id,
+}: {
+  table: "agent";
+  type: "create" | "update" | "delete";
+  data?: any;
+  id?: number;
+}) => {
+  const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
+  const bgColor =
+    type === "create" ? "bg-Yellow" : type === "update" ? "bg-Sky" : "bg-Purple";
+
+  const [open, setOpen] = useState(false);
+
+  const Form = () => {
+    const [state, formAction] = useFormState(deleteActionMap[table], {
+      success: false,
+      error: false,
+    });
+
+    const router = useRouter();
+
+    useEffect(() => {
+      if (state.success) {
+        toast(`Agent has been deleted!`);
+        setOpen(false);
+        router.refresh();
+      }
+    }, [router, state]);
+
+    return type === "delete" && id ? (
+      <form action={formAction} className="p-4 flex flex-col gap-4">
+        <input type="hidden" name="id" value={id} />
+        <span className="text-center font-medium">
+          All data will be lost. Are you sure you want to delete this {table}?
+        </span>
+        <button className="bg-red-700 text-white py-4 px-4 rounded-md border-none w-max self-center">
+          Delete
+        </button>
+      </form>
+    ) : type === "create" || type === "update" ? (
+      forms[table](setOpen, type, data)
+    ) : (
+      "Form not Found!"
+    );
+  };
   
     return (
       <>

@@ -4,10 +4,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm} from "react-hook-form";
 import InputField from "../InputField"; 
 import { agentSchema, AgentSchema } from "@/lib/formValidationSchemas";
-import { createAgent } from "@/lib/actions";
+import { createAgent, updateAgent } from "@/lib/actions";
 import { useFormState } from "react-dom";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const AgentForm = ({ type, data }: { type: "create" | "update"; data?: any }) => {
+const AgentForm = ({ 
+  type,
+   data,
+    setOpen, 
+
+}: { type: "create" | "update" | "delete"; data?: any; setOpen: Dispatch<SetStateAction<boolean>> }) => {
+
+  console.log("AgentForm received data:", data); 
   const {
     register,
     handleSubmit,
@@ -19,15 +29,33 @@ const AgentForm = ({ type, data }: { type: "create" | "update"; data?: any }) =>
 
   // user action state
 
-  const [state, formAction] = useFormState( createAgent, 
-    {success: false,
-       error: false}
+  const [state, formAction] = useFormState(
+    type === "create" ? createAgent : updateAgent, 
+    { success: false, error: false }
   );
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    formAction(data);
+  const onSubmit = handleSubmit((formData) => {
+    if (type === "update" && !data?.AgentID) {
+      console.error("AgentID is missing in update mode!");
+      toast.error("Error: Agent ID is missing.");
+      return;
+    }
+  
+    const payload = { ...formData, id: data?.AgentID }; // Ensure ID is included
+    console.log("Submitting payload:", payload);
+    formAction(payload);
   });
+
+const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      toast(`Agent has been ${type === "create" ? "created" : "updated"}!`);
+      setOpen(false);
+      router.refresh();
+    }
+  }, [router, setOpen, state, type]);
+  
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -106,6 +134,22 @@ const AgentForm = ({ type, data }: { type: "create" | "update"; data?: any }) =>
           register={register}
           error={errors.city}
         />
+     <InputField
+  label="Contact Number 1"
+  name="ContactNumber1" // Match Zod schema
+  defaultValue={data?.Agent_Contact_Number?.[0]?.ContactNumber || ""}
+  register={register}
+  error={errors.ContactNumber1}
+/>
+
+<InputField
+  label="Contact Number 2"
+  name="ContactNumber2" // Match Zod schema
+  defaultValue={data?.Agent_Contact_Number?.[1]?.ContactNumber || ""}
+  register={register}
+  error={errors.ContactNumber2}
+/>
+
       </div>
         {state.error && <span className="text-red-500 font-semibold">Something went wrong!</span>}
       <button className="bg-blue-400 text-white p-2 rounded-md mt-4">

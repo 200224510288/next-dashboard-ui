@@ -3,13 +3,13 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role } from "@/lib/data";
 import prisma from "@/lib/prisma";
-import { Agent, Prisma, User } from "@prisma/client";
+import { Agent, Agent_Contact_Number, Prisma, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import FormModal from "@/components/FormModal";
 
-type AgentList = Agent & { User: User };
+type AgentList = Agent & { User: User; Agent_Contact_Number: Agent_Contact_Number[] };
 
 const AgentListPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
   const { page, ...queryParams } = searchParams;
@@ -38,6 +38,8 @@ const AgentListPage = async ({ searchParams }: { searchParams: { [key: string]: 
       where: query,
       include: {
         User: true, // Including the User model in the query
+        Agent_Contact_Number: true, // Include contact numbers
+
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
@@ -50,6 +52,7 @@ const AgentListPage = async ({ searchParams }: { searchParams: { [key: string]: 
     { header: "Email", accessor: "User.Email", className: "hidden md:table-cell" },
     { header: "User Name", accessor: "User.UserName", className: "hidden md:table-cell" },
     { header: "Password", accessor: "User.Password", className: "hidden md:table-cell" },
+    { header: "Contact Numbers", accessor: "contactNumbers", className: "hidden md:table-cell" },
     { header: "Office Address", accessor: "OfficeAddress", className: "hidden md:table-cell" },
     { header: "Home Address", accessor: "HomeAddress", className: "hidden md:table-cell" },
     { header: "City", accessor: "City", className: "hidden md:table-cell" },
@@ -73,6 +76,11 @@ const AgentListPage = async ({ searchParams }: { searchParams: { [key: string]: 
       <td className="hidden md:table-cell">{item.User.Email || "N/A"}</td>
       <td className="hidden md:table-cell">{item.User.UserName || "N/A"}</td>
       <td className="hidden md:table-cell">{item.User.Password || "N/A"}</td>
+      <td className="hidden md:table-cell">
+        {item.Agent_Contact_Number && item.Agent_Contact_Number.length > 0 
+          ? item.Agent_Contact_Number.map((cn) => cn.ContactNumber).join(", ") 
+          : "N/A"}
+      </td>
       <td className="hidden md:table-cell">{item.OfficeAddress || "N/A"}</td>
       <td className="hidden md:table-cell">{item.HomeAddress || "N/A"}</td>
       <td className="hidden md:table-cell">{item.City || "N/A"}</td>
