@@ -92,7 +92,7 @@ model Delivery {
   Staff         Staff @relation(fields: [StaffID], references: [StaffID])
 
 }
-
+ 
 
 model Lottery {
   LotteryID        Int     @id @default(autoincrement()) 
